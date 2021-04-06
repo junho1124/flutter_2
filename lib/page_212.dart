@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_appds/image_text.dart';
+import 'package:flutter_appds/vehicle.dart';
 
 void main() => runApp(MyApp());
 
@@ -75,6 +76,14 @@ class Page1 extends StatefulWidget {
 }
 
 class _Page1State extends State<Page1> {
+  final vehicles = [
+    Vehicle('https://img.icons8.com/ios/452/taxi.png', '택시'),
+    Vehicle('https://img.icons8.com/ios/452/bus.png', '버스'),
+    Vehicle(
+        'https://i.pinimg.com/originals/23/ef/33/23ef33c7af0907557d07c6c9d10385e8.png',
+        '기차'),
+    Vehicle('https://img.icons8.com/ios/452/taxi.png', '비행기'),
+  ];
   final dummyItems = [
     'https://newsimg.sedaily.com/2021/03/02/22JNI0BLJ4_1.jpg',
     'https://pbs.twimg.com/media/ELbI9xNUwAEA6ZA.jpg',
@@ -100,13 +109,10 @@ class _Page1State extends State<Page1> {
           height: 20,
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ImageText('https://img.icons8.com/ios/452/taxi.png', '택시'),
-            ImageText('https://img.icons8.com/ios/452/bus.png', '버스'),
-            ImageText('https://i.pinimg.com/originals/23/ef/33/23ef33c7af0907557d07c6c9d10385e8.png', '기차'),
-            ImageText('https://img.icons8.com/ios/452/taxi.png', '비행기'),
-          ],
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: vehicles.map((e) {
+              return ImageText(e.imageUrl, e.name);
+            }).toList()
         ),
         SizedBox(
           height: 20,
@@ -140,7 +146,10 @@ class _Page1State extends State<Page1> {
         return Builder(
           builder: (BuildContext context) {
             return Container(
-                width: MediaQuery.of(context).size.width,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
                 margin: EdgeInsets.symmetric(horizontal: 5.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
