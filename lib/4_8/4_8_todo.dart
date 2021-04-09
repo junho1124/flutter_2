@@ -36,7 +36,6 @@ class TodoListPage extends StatefulWidget {
 }
 
 class _TodoListPageState extends State<TodoListPage> {
-  final _items = <Todo>[];
 
   @override
   void dispose() {
@@ -106,7 +105,7 @@ class _TodoListPageState extends State<TodoListPage> {
     showDialog(
         context: context,
         builder: (_) => new AlertDialog(
-              title: new Text('문자가 없습니다.'),
+              title: new Text('내용이 없습니다.'),
               content: new Text("내용을 입력 해 주세요."),
               actions: <Widget>[
                 TextButton(
