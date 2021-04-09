@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -22,8 +20,6 @@ class Todo {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
-
     return MaterialApp(
       title: '할 일 관리',
       theme: ThemeData(
@@ -67,29 +63,33 @@ class _TodoListPageState extends State<TodoListPage> {
       ),
     );
   }
-
-  void _addTodo(Todo todo) {
+//Future : 비동기 작동한다는 명시
+  Future<void> _addTodo(Todo todo) async {
     // 콜백 callback 방식
     // 웹에서는 Promise 방식
     // 콜백 지옥에 빠질 수 있다.
     CollectionReference query = FirebaseFirestore.instance.collection('todo');
-    query.add({
+
+    // DocumentReference value = await query.add({ // value 값에는 id 프로퍼티가 들어가지만 쓰지 않아도 상관 없음. 지워도 무방
+    //   'title': todo.title,
+    //   'isDone': todo.isDone,
+    // });
+    var data = {
       'title': todo.title,
-      'isDone': todo.isDone,
-    }).then((DocumentReference value) {
-      setState(() {
-        _todoController.text = '';
-      });
-    }).catchError((error){
-      //다이얼로그 띄우기
+      'isDone': todo.isDone
+    };
+
+    await query.add(data);
+    setState(() {
+      _todoController.text = '';
     });
   }
-
 
   // 할일 삭제 메서드
   void _deleteTodo(DocumentSnapshot todo) {
     CollectionReference query = FirebaseFirestore.instance.collection('todo');
-    query.doc(todo.id)
+    query
+        .doc(todo.id)
         .delete()
         .then((value) => print('성공'))
         .catchError((error) => print('실패'));
@@ -106,20 +106,18 @@ class _TodoListPageState extends State<TodoListPage> {
     showDialog(
         context: context,
         builder: (_) => new AlertDialog(
-          title: new Text('문자가 없습니다.'),
-          content: new Text("내용을 입력 해 주세요."),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        ));
+              title: new Text('문자가 없습니다.'),
+              content: new Text("내용을 입력 해 주세요."),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Close'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ));
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -145,26 +143,26 @@ class _TodoListPageState extends State<TodoListPage> {
                     onPressed: () {
                       if (_todoController.text != '') {
                         _addTodo(Todo(_todoController.text));
-                      } else return _showMaterialDialog();
-                    }
-                    )
+                      } else
+                        return _showMaterialDialog();
+                    })
               ],
-
             ),
             StreamBuilder<QuerySnapshot>(
-              stream: query.snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return CircularProgressIndicator();
-                }
-                final documents = snapshot.data.docs;
-                return Expanded(
-                  child: ListView(
-                    children: documents.map((doc) => _buildItemWidget(doc)).toList(),
-                  ),
-                );
-              }
-            ),
+                stream: query.snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return CircularProgressIndicator();
+                  }
+                  final documents = snapshot.data.docs;
+                  return Expanded(
+                    child: ListView(
+                      children: documents
+                          .map((doc) => _buildItemWidget(doc))
+                          .toList(),
+                    ),
+                  );
+                }),
           ],
         ),
       ),
