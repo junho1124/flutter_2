@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_appds/main.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(MyApp()); // 최상위 앱 MyApp 을 실생
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget { //
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,15 +24,15 @@ class BmiMain extends StatefulWidget {
 
 class _BmiMainState extends State<BmiMain> {
 
-  final _formKey = GlobalKey<FormState>();
-  final _heightController = TextEditingController();
+  final _formKey = GlobalKey<FormState>(); // 글로벌 키를 생성 -> 폼 안에서 검증 할 때 필
+  final _heightController = TextEditingController(); // 상태변화에 관하여 사용 하고 싶을 때 설정 -> SetState()안에서 사용 되는게 일반적.
   final _weightController = TextEditingController();
 
   @override
-  void dispose() {
+  void dispose() { // 메모리에서 헤재되도록 하는 것
     _heightController.dispose();
     _weightController.dispose();
-    super.dispose();
+    super.dispose(); // 상속 받은 dispose를 사용 할 것이며, 수정을 할 수도 있다.
   }
 
   @override
@@ -43,7 +42,7 @@ class _BmiMainState extends State<BmiMain> {
       appBar: AppBar(title: Text('비만도 계산기')),
       body: Container(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
+        child: Form( // 입력 받은 창들을 한번에 정리하는 것. 이 안에 있는 검증을 마쳐야 다음 단계로 넘어갈 수 있음.
           key: _formKey,
           child: Column(
             children: <Widget>[
