@@ -36,7 +36,6 @@ class TodoListPage extends StatefulWidget {
 }
 
 class _TodoListPageState extends State<TodoListPage> {
-
   @override
   void dispose() {
     _todoController.dispose();
@@ -48,7 +47,7 @@ class _TodoListPageState extends State<TodoListPage> {
   Widget _buildItemWidget(DocumentSnapshot doc) {
     final todo = Todo(doc['title'], isDone: doc['isDone']);
     return ListTile(
-      onTap: () => _toggleTodo(todo),
+      onTap: () => _toggleTodo(doc),
       title: Text(todo.title,
           style: todo.isDone
               ? TextStyle(
@@ -62,6 +61,7 @@ class _TodoListPageState extends State<TodoListPage> {
       ),
     );
   }
+
 //Future : 비동기 작동한다는 명시
   Future<void> _addTodo(Todo todo) async {
     // 콜백 callback 방식
@@ -73,10 +73,7 @@ class _TodoListPageState extends State<TodoListPage> {
     //   'title': todo.title,
     //   'isDone': todo.isDone,
     // });
-    var data = {
-      'title': todo.title,
-      'isDone': todo.isDone
-    };
+    var data = {'title': todo.title, 'isDone': todo.isDone};
 
     await query.add(data);
     setState(() {
@@ -87,6 +84,7 @@ class _TodoListPageState extends State<TodoListPage> {
   // 할일 삭제 메서드
   void _deleteTodo(DocumentSnapshot todo) {
     CollectionReference query = FirebaseFirestore.instance.collection('todo');
+
     query
         .doc(todo.id)
         .delete()
@@ -95,10 +93,14 @@ class _TodoListPageState extends State<TodoListPage> {
   }
 
   //할 일 완료/미완료 메서드
-  void _toggleTodo(Todo todo) {
-    setState(() {
-      todo.isDone = !todo.isDone;
-    });
+  void _toggleTodo(DocumentSnapshot doc) {
+    CollectionReference qeury = FirebaseFirestore.instance.collection('todo');
+
+    qeury
+        .doc(doc.id)
+        .update({'isDone': !doc['isDone']})
+        .then((value) => print('업데이트'))
+        .catchError((error) => '에러');
   }
 
   _showMaterialDialog() {
