@@ -95,7 +95,6 @@ class _TodoListPageState extends State<TodoListPage> {
   //할 일 완료/미완료 메서드
   void _toggleTodo(DocumentSnapshot doc) {
     CollectionReference qeury = FirebaseFirestore.instance.collection('todo');
-
     qeury
         .doc(doc.id)
         .update({'isDone': !doc['isDone']})
